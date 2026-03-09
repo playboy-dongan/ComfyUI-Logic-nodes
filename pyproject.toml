@@ -1,0 +1,12 @@
+[project]
+name = "comfyui-logic-nodes"
+description = "ComfyUI logic utility nodes - workflow control, conditional logic, universal preview, batch processing and more."
+version = "1.2.0"
+license = { text = "MIT" }
+
+[project.urls]
+Repository = "https://github.com/playboy-dongan/ComfyUI-Logic"
+
+[tool.comfy]
+PublisherId = "playboy"
+DisplayName = "ComfyUI-Logic"
