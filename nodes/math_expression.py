@@ -47,7 +47,7 @@ def _eval_node(node, variables):
     if isinstance(node, ast.Constant):
         if isinstance(node.value, (int, float)):
             return node.value
-        raise ValueError(f"不支持的常量类型: {type(node.value).__name__}")
+        raise ValueError(f"Unsupported constant type: {type(node.value).__name__}")
 
     if isinstance(node, ast.Name):
         name = node.id
@@ -55,18 +55,18 @@ def _eval_node(node, variables):
             return variables[name]
         if name in SAFE_CONSTANTS:
             return SAFE_CONSTANTS[name]
-        raise ValueError(f"未知变量: {name}")
+        raise ValueError(f"Unknown variable: {name}")
 
     if isinstance(node, ast.UnaryOp):
         op = UNARY_OPS.get(type(node.op))
         if op is None:
-            raise ValueError(f"不支持的一元运算: {type(node.op).__name__}")
+            raise ValueError(f"Unsupported unary op: {type(node.op).__name__}")
         return op(_eval_node(node.operand, variables))
 
     if isinstance(node, ast.BinOp):
         op = BIN_OPS.get(type(node.op))
         if op is None:
-            raise ValueError(f"不支持的运算符: {type(node.op).__name__}")
+            raise ValueError(f"Unsupported operator: {type(node.op).__name__}")
         return op(_eval_node(node.left, variables), _eval_node(node.right, variables))
 
     if isinstance(node, ast.Compare):
@@ -74,7 +74,7 @@ def _eval_node(node, variables):
         for op_node, comparator in zip(node.ops, node.comparators):
             op = CMP_OPS.get(type(op_node))
             if op is None:
-                raise ValueError(f"不支持的比较运算: {type(op_node).__name__}")
+                raise ValueError(f"Unsupported comparison: {type(op_node).__name__}")
             right = _eval_node(comparator, variables)
             if not op(left, right):
                 return 0.0
@@ -83,10 +83,10 @@ def _eval_node(node, variables):
 
     if isinstance(node, ast.Call):
         if not isinstance(node.func, ast.Name):
-            raise ValueError("仅支持直接函数调用")
+            raise ValueError("Only direct function calls supported")
         func = SAFE_FUNCTIONS.get(node.func.id)
         if func is None:
-            raise ValueError(f"未知函数: {node.func.id}")
+            raise ValueError(f"Unknown function: {node.func.id}")
         args = [_eval_node(a, variables) for a in node.args]
         return func(*args)
 
@@ -94,12 +94,20 @@ def _eval_node(node, variables):
         cond = _eval_node(node.test, variables)
         return _eval_node(node.body, variables) if cond else _eval_node(node.orelse, variables)
 
-    raise ValueError(f"不支持的语法: {type(node).__name__}")
+    raise ValueError(f"Unsupported syntax: {type(node).__name__}")
+
+
+_EXPR_CACHE = {}
+_CACHE_MAX = 64
 
 
 def safe_eval(expression, variables):
-    tree = ast.parse(expression.strip(), mode="eval")
-    return _eval_node(tree, variables)
+    expr = expression.strip()
+    if expr not in _EXPR_CACHE:
+        if len(_EXPR_CACHE) >= _CACHE_MAX:
+            _EXPR_CACHE.clear()
+        _EXPR_CACHE[expr] = ast.parse(expr, mode="eval")
+    return _eval_node(_EXPR_CACHE[expr], variables)
 
 
 def _to_number(value):
@@ -129,29 +137,29 @@ class MathExpression:
         optional = {name: (any_type, {}) for name in VAR_NAMES}
         return {
             "required": {
-                "表达式": ("STRING", {"default": "A + B", "multiline": False}),
+                "expression": ("STRING", {"default": "A + B", "multiline": False}),
             },
             "optional": optional,
         }
 
     RETURN_TYPES = ("FLOAT", "INT", "BOOLEAN")
-    RETURN_NAMES = ("浮点数", "整数", "布尔值")
+    RETURN_NAMES = ("float", "int", "boolean")
     FUNCTION = "execute"
     OUTPUT_NODE = True
-    CATEGORY = "⚡ 逻辑"
+    CATEGORY = "⚡ Logic"
 
     @classmethod
     def IS_CHANGED(cls, **kwargs):
         return float("NaN")
 
-    def execute(self, 表达式, **kwargs):
+    def execute(self, expression, **kwargs):
         variables = {}
         for name in VAR_NAMES:
             if name in kwargs:
                 variables[name] = _to_number(kwargs[name])
 
         try:
-            result = float(safe_eval(表达式, variables))
+            result = float(safe_eval(expression, variables))
             error = ""
         except Exception as ex:
             result = 0.0
@@ -162,7 +170,7 @@ class MathExpression:
 
         return {
             "ui": {
-                "expression": [表达式],
+                "expression": [expression],
                 "float_val": [str(result)],
                 "int_val": [str(int_result)],
                 "bool_val": [str(bool_result)],
@@ -173,4 +181,4 @@ class MathExpression:
 
 
 NODE_CLASS_MAPPINGS = {"Logic_Math": MathExpression}
-NODE_DISPLAY_NAME_MAPPINGS = {"Logic_Math": "🧮 数学表达式"}
+NODE_DISPLAY_NAME_MAPPINGS = {"Logic_Math": "🧮 Math Expression"}

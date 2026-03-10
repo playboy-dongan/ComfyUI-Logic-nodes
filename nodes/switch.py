@@ -7,23 +7,23 @@ class Switch:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "真": (any_type, {}),
-            "假": (any_type, {}),
-            "条件": ("BOOLEAN", {"default": True, "label_on": "真", "label_off": "假"}),
+            "true_val": (any_type, {}),
+            "false_val": (any_type, {}),
+            "condition": ("BOOLEAN", {"default": True, "label_on": "True", "label_off": "False", "on": "True", "off": "False"}),
         }}
 
     RETURN_TYPES = (any_type,)
-    RETURN_NAMES = ("输出",)
+    RETURN_NAMES = ("output",)
     FUNCTION = "execute"
-    CATEGORY = "⚡ 逻辑"
+    CATEGORY = "⚡ Logic"
 
     @classmethod
     def IS_CHANGED(cls, **kwargs):
         return float("NaN")
 
-    def execute(self, 真, 假, 条件):
-        return (真,) if 条件 else (假,)
+    def execute(self, true_val, false_val, condition):
+        return (true_val,) if condition else (false_val,)
 
 
 NODE_CLASS_MAPPINGS = {"Logic_Switch": Switch}
-NODE_DISPLAY_NAME_MAPPINGS = {"Logic_Switch": "🔀 条件切换"}
+NODE_DISPLAY_NAME_MAPPINGS = {"Logic_Switch": "🔀 Switch"}

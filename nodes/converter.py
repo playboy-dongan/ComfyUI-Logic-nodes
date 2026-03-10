@@ -116,25 +116,25 @@ class Converter:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "任意": (any_type, {}),
+            "any": (any_type, {}),
         }}
 
     RETURN_TYPES = ("STRING", "INT", "FLOAT", "BOOLEAN")
-    RETURN_NAMES = ("字符串", "整数", "浮点数", "布尔值")
+    RETURN_NAMES = ("string", "int", "float", "boolean")
     FUNCTION = "execute"
     OUTPUT_NODE = True
-    CATEGORY = "⚡ 逻辑"
+    CATEGORY = "⚡ Logic"
 
     @classmethod
     def IS_CHANGED(cls, **kwargs):
         return float("NaN")
 
-    def execute(self, 任意):
-        str_val = to_string(任意)
-        int_val = to_int(任意)
-        float_val = to_float(任意)
-        bool_val = to_bool(任意)
-        orig_type = _detect_type(任意)
+    def execute(self, any):
+        str_val = to_string(any)
+        int_val = to_int(any)
+        float_val = to_float(any)
+        bool_val = to_bool(any)
+        orig_type = _detect_type(any)
 
         return {
             "ui": {
@@ -149,4 +149,4 @@ class Converter:
 
 
 NODE_CLASS_MAPPINGS = {"Logic_Converter": Converter}
-NODE_DISPLAY_NAME_MAPPINGS = {"Logic_Converter": "🔄 类型转换"}
+NODE_DISPLAY_NAME_MAPPINGS = {"Logic_Converter": "🔄 Type Converter"}

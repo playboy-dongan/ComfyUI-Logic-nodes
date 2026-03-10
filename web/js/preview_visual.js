@@ -1,5 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
+import { tr } from "./tr.js";
 
 app.registerExtension({
     name: "Logic.UniversalPreviewVisual",
@@ -23,7 +24,7 @@ app.registerExtension({
             "overflow-y: auto",
         ].join(";");
 
-        const textWidget = node.addDOMWidget("预览文本", "customtext", textEl, {
+        const textWidget = node.addDOMWidget(tr("Logic.Preview.textLabel"), "customtext", textEl, {
             serialize: false,
             hideOnZoom: false,
         });
@@ -33,7 +34,7 @@ app.registerExtension({
         const audioContainer = document.createElement("div");
         audioContainer.style.cssText = "width:100%; padding:4px 6px; display:flex; flex-direction:column; gap:6px;";
 
-        const audioWidget = node.addDOMWidget("预览音频", "customaudio", audioContainer, {
+        const audioWidget = node.addDOMWidget(tr("Logic.Preview.audioLabel"), "customaudio", audioContainer, {
             serialize: false,
             hideOnZoom: false,
         });

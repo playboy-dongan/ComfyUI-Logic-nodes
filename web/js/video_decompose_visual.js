@@ -1,4 +1,5 @@
 import { app } from "../../scripts/app.js";
+import { tr, trNode } from "./tr.js";
 
 app.registerExtension({
     name: "Logic.VideoDecomposeVisual",
@@ -8,7 +9,7 @@ app.registerExtension({
         let data = null;
 
         node.addCustomWidget({
-            type: "custom", name: "视频信息", serialize: false,
+            type: "custom", name: tr("Logic.VideoDecompose.infoLabel"), serialize: false,
             computeSize: () => [node.size[0], data ? 84 : 0],
             draw(ctx, _node, width, y) {
                 if (!data) return;
@@ -22,11 +23,11 @@ app.registerExtension({
 
                 const x0 = 10, x1 = width - 10;
                 const lines = [
-                    { icon: "📐", label: "分辨率", value: data.resolution, color: "#6af" },
-                    { icon: "⏱️", label: "时长",   value: data.duration + "s", color: "#8f8" },
-                    { icon: "🎞️", label: "帧率",   value: data.fps + " fps", color: "#fda" },
-                    { icon: "🖼️", label: "提取帧", value: data.frames + " 帧", color: "#fda" },
-                    { icon: "🔊", label: "音频",   value: data.hasAudio ? "✅ 已提取" : "❌ 无音频", color: data.hasAudio ? "#8f8" : "#888" },
+                    { icon: "📐", label: tr("Logic.common.Resolution"), value: data.resolution, color: "#6af" },
+                    { icon: "⏱️", label: tr("Logic.common.Duration"),   value: data.duration + "s", color: "#8f8" },
+                    { icon: "🎞️", label: tr("Logic.common.FPS"),   value: data.fps + " fps", color: "#fda" },
+                    { icon: "🖼️", label: tr("Logic.common.Frames"), value: data.frames, color: "#fda" },
+                    { icon: "🔊", label: tr("Logic.common.Audio"),   value: data.hasAudio ? "✅ " + tr("Logic.common.Yes") : "❌ " + tr("Logic.common.No"), color: data.hasAudio ? "#8f8" : "#888" },
                 ];
                 let cy = y + 18;
                 for (const l of lines) {
@@ -53,7 +54,7 @@ app.registerExtension({
                 frames:     o?.frames?.[0]     ?? "0",
                 hasAudio:   o?.has_audio?.[0] === "True",
             };
-            node.title = `✂️ 分解视频 ${data.resolution} ${data.duration}s`;
+            node.title = `${trNode("Logic_VideoDecompose")} ${data.resolution} ${data.duration}s`;
             node.setSize(node.computeSize());
             node.setDirtyCanvas(true, true);
         };

@@ -10,10 +10,10 @@ class Looper:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "总次数": ("INT", {"default": 3, "min": 1, "max": 9999}),
+                "total": ("INT", {"default": 3, "min": 1, "max": 9999}),
             },
             "optional": {
-                "任意": (any_type, {}),
+                "any": (any_type, {}),
             },
             "hidden": {
                 "unique_id": "UNIQUE_ID",
@@ -21,34 +21,34 @@ class Looper:
         }
 
     RETURN_TYPES = (any_type, "INT", "INT", "INT")
-    RETURN_NAMES = ("任意", "索引", "总次数", "剩余")
+    RETURN_NAMES = ("any", "index", "total", "remaining")
     FUNCTION = "execute"
     OUTPUT_NODE = True
-    CATEGORY = "⚡ 逻辑"
+    CATEGORY = "⚡ Logic"
 
     @classmethod
     def IS_CHANGED(cls, **kwargs):
         return float("NaN")
 
-    def execute(self, 总次数, unique_id, 任意=None):
+    def execute(self, total, unique_id, any=None):
         nid = str(unique_id)
 
-        if nid not in self._state or self._state[nid] >= 总次数:
+        if nid not in self._state or self._state[nid] >= total:
             self._state[nid] = 0
 
         current = self._state[nid]
-        remaining = 总次数 - current - 1
+        remaining = total - current - 1
         self._state[nid] = current + 1
 
         return {
             "ui": {
                 "current": [current],
-                "total": [总次数],
+                "total": [total],
                 "remaining": [remaining],
             },
-            "result": (任意, current, 总次数, remaining),
+            "result": (any, current, total, remaining),
         }
 
 
 NODE_CLASS_MAPPINGS = {"Logic_Looper": Looper}
-NODE_DISPLAY_NAME_MAPPINGS = {"Logic_Looper": "⚙️ 批处理器"}
+NODE_DISPLAY_NAME_MAPPINGS = {"Logic_Looper": "⚙️ Batch Processor"}

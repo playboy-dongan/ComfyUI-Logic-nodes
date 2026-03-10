@@ -1,4 +1,5 @@
 import { app } from "../../scripts/app.js";
+import { tr, trTypeName, trDetail } from "./tr.js";
 
 const ICONS = {
     IMAGE: "🖼️", IMAGE_LIST: "🖼️", MASK: "🎭", MASK_LIST: "🎭",
@@ -24,7 +25,7 @@ app.registerExtension({
         let typeName = "", detail = "";
 
         node.addCustomWidget({
-            type: "custom", name: "类型显示", serialize: false,
+            type: "custom", name: tr("Logic.PreviewType.typeLabel"), serialize: false,
             computeSize: () => [node.size[0], detail ? 46 : 30],
             draw(ctx, _node, width, y) {
                 if (!typeName) return;
@@ -32,11 +33,12 @@ app.registerExtension({
                 ctx.textAlign = "center";
                 ctx.font = "bold 15px Arial";
                 ctx.fillStyle = COLORS[typeName] || "#ccc";
-                ctx.fillText(`${ICONS[typeName] || "❓"}  ${typeName}`, width / 2, y + 18);
+                const displayType = trTypeName(typeName);
+                ctx.fillText(`${ICONS[typeName] || "❓"}  ${displayType}`, width / 2, y + 18);
                 if (detail) {
                     ctx.font = "12px Arial";
                     ctx.fillStyle = "#999";
-                    ctx.fillText(detail, width / 2, y + 38);
+                    ctx.fillText(trDetail(detail), width / 2, y + 38);
                 }
                 ctx.restore();
             },

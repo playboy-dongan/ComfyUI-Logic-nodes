@@ -1,0 +1,148 @@
+{
+  "Logic_Blocker": {
+    "display_name": "🚧 Blocker",
+    "description": "Pass or block data based on a boolean switch.",
+    "inputs": {
+      "any": { "name": "Any", "tooltip": "Input of any type" },
+      "enable": { "name": "Enable", "tooltip": "Pass/Block" }
+    },
+    "outputs": { "0": { "name": "Any", "tooltip": "Pass-through or blocked" } }
+  },
+  "Logic_PreviewType": {
+    "display_name": "👁️ Preview Type",
+    "description": "Display the type name and details of input data.",
+    "inputs": { "any": { "name": "Any", "tooltip": "Input of any type" } }
+  },
+  "Logic_Judge": {
+    "display_name": "⚖️ Judge",
+    "description": "Conditional comparison of two values, outputs boolean.",
+    "inputs": {
+      "any_a": { "name": "Any A", "tooltip": "First value to compare" },
+      "condition": { "name": "Condition", "tooltip": "Comparison condition", "options": {
+        "A == B": "A == B", "A != B": "A != B", "A > B": "A > B", "A < B": "A < B", "A >= B": "A >= B", "A <= B": "A <= B",
+        "A contains B": "A contains B", "A is empty": "A is empty", "A is not empty": "A is not empty", "A is true": "A is true", "A is false": "A is false",
+        "length == B": "length == B", "length > B": "length > B", "length < B": "length < B"
+      }},
+      "any_b": { "name": "Any B", "tooltip": "Second value (optional)" }
+    },
+    "outputs": { "0": { "name": "Result", "tooltip": "Boolean result" } }
+  },
+  "Logic_Switch": {
+    "display_name": "🔀 Switch",
+    "description": "Select one of two inputs based on a boolean value.",
+    "inputs": {
+      "true_val": { "name": "True", "tooltip": "Output when condition is true" },
+      "false_val": { "name": "False", "tooltip": "Output when condition is false" },
+      "condition": { "name": "Condition", "tooltip": "Boolean condition" }
+    },
+    "outputs": { "0": { "name": "Output", "tooltip": "Selected input" } }
+  },
+  "Logic_Switcher": {
+    "display_name": "🎚️ Switcher",
+    "description": "Select one output from multiple inputs by index.",
+    "inputs": {
+      "select": { "name": "Select", "tooltip": "Index of output port" },
+      "any1": { "name": "Any 1", "tooltip": "Input 1" },
+      "any2": { "name": "Any 2", "tooltip": "Input 2" }
+    },
+    "outputs": { "0": { "name": "Output", "tooltip": "Selected input" } }
+  },
+  "Logic_UniversalPreview": {
+    "display_name": "🖥️ Universal Preview",
+    "description": "Preview almost all ComfyUI data formats.",
+    "inputs": { "any": { "name": "Any", "tooltip": "Input of any type" } }
+  },
+  "Logic_BatchCombiner": {
+    "display_name": "📦 Batch Combiner",
+    "description": "Merge multiple inputs into one batch.",
+    "inputs": {
+      "any1": { "name": "Any 1", "tooltip": "Input 1" },
+      "any2": { "name": "Any 2", "tooltip": "Input 2" }
+    },
+    "outputs": { "0": { "name": "Batch", "tooltip": "Merged data" } }
+  },
+  "Logic_Looper": {
+    "display_name": "⚙️ Batch Processor",
+    "description": "Repeat workflow N times, output index and remaining count.",
+    "inputs": {
+      "total": { "name": "Total", "tooltip": "Number of repetitions" },
+      "any": { "name": "Any", "tooltip": "Optional pass-through" }
+    },
+    "outputs": {
+      "0": { "name": "Any", "tooltip": "Pass-through input" },
+      "1": { "name": "Index", "tooltip": "Current iteration" },
+      "2": { "name": "Total", "tooltip": "Total repetitions" },
+      "3": { "name": "Remaining", "tooltip": "Remaining count" }
+    }
+  },
+  "Logic_Random": {
+    "display_name": "🎲 Random Tool",
+    "description": "Generate random integer, float, seed, or boolean.",
+    "inputs": {
+      "mode": { "name": "Mode", "tooltip": "Random type", "options": {
+        "random_int": "Random Integer",
+        "random_float": "Random Float",
+        "random_seed": "Random Seed",
+        "random_bool": "Random Boolean"
+      }},
+      "min_val": { "name": "Min", "tooltip": "Lower bound for int/float mode" },
+      "max_val": { "name": "Max", "tooltip": "Upper bound for int/float mode" }
+    },
+    "outputs": { "0": { "name": "Random", "tooltip": "Generated value" } }
+  },
+  "Logic_Converter": {
+    "display_name": "🔄 Type Converter",
+    "description": "Convert any type to string, integer, float, and boolean.",
+    "inputs": { "any": { "name": "Any", "tooltip": "Input of any type" } },
+    "outputs": {
+      "0": { "name": "String", "tooltip": "STRING output" },
+      "1": { "name": "Integer", "tooltip": "INT output" },
+      "2": { "name": "Float", "tooltip": "FLOAT output" },
+      "3": { "name": "Boolean", "tooltip": "BOOLEAN output" }
+    }
+  },
+  "Logic_Math": {
+    "display_name": "🧮 Math Expression",
+    "description": "Evaluate math expressions with A~J variables.",
+    "inputs": {
+      "expression": { "name": "Expression", "tooltip": "e.g. A+B, sin(A)*100" },
+      "A": { "name": "A", "tooltip": "Variable A" },
+      "B": { "name": "B", "tooltip": "Variable B" },
+      "C": { "name": "C", "tooltip": "Variable C" },
+      "D": { "name": "D", "tooltip": "Variable D" }
+    },
+    "outputs": {
+      "0": { "name": "Float", "tooltip": "FLOAT result" },
+      "1": { "name": "Integer", "tooltip": "INT result" },
+      "2": { "name": "Boolean", "tooltip": "BOOLEAN result" }
+    }
+  },
+  "Logic_VideoDecompose": {
+    "display_name": "✂️ Decompose Video",
+    "description": "Decompose video into image frames, audio, and metadata.",
+    "inputs": {
+      "video": { "name": "Video", "tooltip": "Video file or VideoInput" },
+      "max_frames": { "name": "Max Frames", "tooltip": "0=no limit" },
+      "frame_skip": { "name": "Frame Skip", "tooltip": "Take every Nth frame" }
+    },
+    "outputs": {
+      "0": { "name": "Images", "tooltip": "Image frame batch" },
+      "1": { "name": "Audio", "tooltip": "Extracted audio" },
+      "2": { "name": "Duration", "tooltip": "Duration in seconds" },
+      "3": { "name": "Frame Rate", "tooltip": "FPS" },
+      "4": { "name": "Frame Count", "tooltip": "Extracted frames" },
+      "5": { "name": "Width", "tooltip": "Video width" },
+      "6": { "name": "Height", "tooltip": "Video height" }
+    }
+  },
+  "Logic_VideoCompose": {
+    "display_name": "🎞️ Compose Video",
+    "description": "Compose image frames and audio into ComfyUI VIDEO object.",
+    "inputs": {
+      "images": { "name": "Images", "tooltip": "Image frame batch" },
+      "fps": { "name": "Frame Rate", "tooltip": "FPS" },
+      "audio": { "name": "Audio", "tooltip": "Optional audio" }
+    },
+    "outputs": { "0": { "name": "Video", "tooltip": "VIDEO object" } }
+  }
+}

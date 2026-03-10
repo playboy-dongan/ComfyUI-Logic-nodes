@@ -1,4 +1,5 @@
 import { app } from "../../scripts/app.js";
+import { tr, trNode, trBool } from "./tr.js";
 
 const MIN_INPUTS = 2;
 const MAX_INPUTS = 10;
@@ -53,7 +54,7 @@ app.registerExtension({
         }
 
         node.addCustomWidget({
-            type: "custom", name: "计算结果", serialize: false,
+            type: "custom", name: tr("Logic.Math.resultLabel", "Result"), serialize: false,
             computeSize: () => [node.size[0], data ? (data.error ? 30 : 60) : 0],
             draw(ctx, _node, width, y) {
                 if (!data) return;
@@ -66,7 +67,7 @@ app.registerExtension({
                     const msg = "⚠ " + data.error;
                     const maxW = width - 20;
                     ctx.fillText(
-                        ctx.measureText(msg).width > maxW ? "⚠ 表达式错误" : msg,
+                        ctx.measureText(msg).width > maxW ? "⚠ " + tr("Logic.Math.expressionError") : msg,
                         width / 2, y + 18
                     );
                     ctx.restore();
@@ -81,9 +82,9 @@ app.registerExtension({
 
                 const x0 = 10, x1 = width - 10;
                 const lines = [
-                    { icon: "🔢", label: "FLOAT", value: data.float, color: "#fda" },
-                    { icon: "🔢", label: "INT",   value: data.int,   color: "#fda" },
-                    { icon: "⚡", label: "BOOL",  value: data.bool,  color: data.bool === "True" ? "#8f8" : "#f88" },
+                    { icon: "🔢", label: tr("Logic.Math.FLOAT"), value: data.float, color: "#fda" },
+                    { icon: "🔢", label: tr("Logic.Math.INT"),   value: data.int,   color: "#fda" },
+                    { icon: "⚡", label: tr("Logic.Math.BOOL"),  value: trBool(data.bool),  color: data.bool === "True" ? "#8f8" : "#f88" },
                 ];
                 let cy = y + 20;
                 for (const l of lines) {
@@ -121,9 +122,8 @@ app.registerExtension({
                 bool:  o?.bool_val?.[0]   ?? "False",
                 error: o?.error?.[0]      ?? "",
             };
-            node.title = data.error
-                ? "⚠ 🧮 数学表达式"
-                : `🧮 = ${data.float}`;
+            const baseTitle = trNode("Logic_Math");
+            node.title = data.error ? "⚠ " + baseTitle : `🧮 = ${data.float}`;
             node.setSize(node.computeSize());
             node.setDirtyCanvas(true, true);
         };

@@ -1,4 +1,5 @@
 import { app } from "../../scripts/app.js";
+import { tr, trTypeName, trBool } from "./tr.js";
 
 const TYPE_COLORS = {
     IMAGE: "#6af", MASK: "#fff", LATENT: "#d8f",
@@ -23,7 +24,7 @@ app.registerExtension({
         let data = null;
 
         node.addCustomWidget({
-            type: "custom", name: "转换结果", serialize: false,
+            type: "custom", name: tr("Logic.Converter.resultLabel"), serialize: false,
             computeSize: () => [node.size[0], data ? 90 : 0],
             draw(ctx, _node, width, y) {
                 if (!data) return;
@@ -32,7 +33,7 @@ app.registerExtension({
                 ctx.textAlign = "center";
                 ctx.font = "bold 13px Arial";
                 ctx.fillStyle = typeColor(data.type);
-                ctx.fillText(`源类型: ${data.type}`, width / 2, y + 14);
+                ctx.fillText(`${tr("Logic.Converter.Source")}: ${trTypeName(data.type)}`, width / 2, y + 14);
 
                 ctx.strokeStyle = "#555";
                 ctx.beginPath();
@@ -42,10 +43,10 @@ app.registerExtension({
 
                 const x0 = 10, x1 = width - 10;
                 const lines = [
-                    { icon: "📝", label: "STR",   value: truncate(data.str, 24), color: "#8f8" },
-                    { icon: "🔢", label: "INT",   value: data.int,               color: "#fda" },
-                    { icon: "🔢", label: "FLOAT", value: data.float,             color: "#fda" },
-                    { icon: "⚡", label: "BOOL",  value: data.bool,              color: data.bool === "True" ? "#8f8" : "#f88" },
+                    { icon: "📝", label: tr("Logic.Converter.STR"),   value: truncate(data.str, 24), color: "#8f8" },
+                    { icon: "🔢", label: tr("Logic.Converter.INT"),   value: data.int,               color: "#fda" },
+                    { icon: "🔢", label: tr("Logic.Converter.FLOAT"), value: data.float,             color: "#fda" },
+                    { icon: "⚡", label: tr("Logic.Converter.BOOL"),  value: trBool(data.bool),      color: data.bool === "True" ? "#8f8" : "#f88" },
                 ];
                 let cy = y + 36;
                 for (const l of lines) {

@@ -6,50 +6,63 @@ from .blocker import AlwaysEqualProxy
 
 any_type = AlwaysEqualProxy("*")
 
+_FPS_CACHE = {}
+_CACHE_MAX = 32
+
+
+def _fps_to_fraction(fps):
+    """Cache Fraction for common fps values to avoid repeated limit_denominator."""
+    k = round(fps, 2)
+    if k not in _FPS_CACHE:
+        if len(_FPS_CACHE) >= _CACHE_MAX:
+            _FPS_CACHE.clear()
+        _FPS_CACHE[k] = Fraction(fps).limit_denominator(10000)
+    return _FPS_CACHE[k]
+
 
 class VideoCompose:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "图像": ("IMAGE",),
-                "帧率": ("FLOAT", {"default": 24.0, "min": 1.0, "max": 120.0, "step": 0.01}),
+                "images": ("IMAGE",),
+                "fps": ("FLOAT", {"default": 24.0, "min": 1.0, "max": 120.0, "step": 0.01}),
             },
             "optional": {
-                "音频": (any_type, {}),
+                "audio": (any_type, {}),
             },
         }
 
     RETURN_TYPES = ("VIDEO",)
-    RETURN_NAMES = ("视频",)
+    RETURN_NAMES = ("video",)
     FUNCTION = "execute"
     OUTPUT_NODE = True
-    CATEGORY = "⚡ 逻辑/🎬 视频"
+    CATEGORY = "⚡ Logic/🎬 Video"
 
     @classmethod
     def IS_CHANGED(cls, **kwargs):
         return float("NaN")
 
-    def execute(self, 图像, 帧率, 音频=None):
+    def execute(self, images, fps, audio=None):
         from comfy_api.latest._util.video_types import VideoComponents
         from comfy_api.input_impl import VideoFromComponents
 
-        frame_rate = Fraction(帧率).limit_denominator(10000)
+        frame_rate = _fps_to_fraction(fps)
 
         audio_dict = None
-        if 音频 is not None:
-            if isinstance(音频, dict) and "waveform" in 音频 and "sample_rate" in 音频:
-                audio_dict = 音频
+        if audio is not None:
+            if isinstance(audio, dict) and "waveform" in audio and "sample_rate" in audio:
+                audio_dict = audio
 
         components = VideoComponents(
-            images=图像,
+            images=images,
             audio=audio_dict,
             frame_rate=frame_rate,
         )
         video = VideoFromComponents(components)
 
-        num_frames = 图像.shape[0]
-        h, w = 图像.shape[1], 图像.shape[2]
+        num_frames = images.shape[0]
+        h, w = images.shape[1], images.shape[2]
         duration = num_frames / float(frame_rate) if frame_rate > 0 else 0.0
 
         return {
@@ -65,4 +78,4 @@ class VideoCompose:
 
 
 NODE_CLASS_MAPPINGS = {"Logic_VideoCompose": VideoCompose}
-NODE_DISPLAY_NAME_MAPPINGS = {"Logic_VideoCompose": "🎞️ 合成视频"}
+NODE_DISPLAY_NAME_MAPPINGS = {"Logic_VideoCompose": "🎞️ Compose Video"}

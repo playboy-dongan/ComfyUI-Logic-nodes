@@ -21,7 +21,7 @@ def _decompose_via_av(source, max_frames, step):
     with av.open(source, mode="r") as container:
         video_stream = next((s for s in container.streams if s.type == "video"), None)
         if video_stream is None:
-            raise RuntimeError("视频中未找到视频流")
+            raise RuntimeError("No video stream found")
 
         video_stream.thread_type = "AUTO"
 
@@ -61,15 +61,21 @@ def _decompose_via_av(source, max_frames, step):
         frame_list = [] if images is None else None
         audio_chunks = []
         audio_sr = 44100
+        done_video = False
 
         for packet in container.demux(decode_streams):
+            if done_video and (audio_stream is None or packet.stream.type == "video"):
+                continue
             for frame in packet.decode():
                 if isinstance(frame, av.VideoFrame):
                     if written >= limit:
+                        frame_idx += 1
                         continue
                     if frame_idx % step == 0:
                         arr = frame.to_ndarray(format="rgb24")
-                        t = torch.from_numpy(arr).float().div_(255.0)
+                        t = torch.from_numpy(
+                            (arr.astype(np.float32) * (1.0 / 255.0))
+                        )
                         if images is not None and written < images.shape[0]:
                             images[written] = t
                         elif frame_list is not None:
@@ -77,6 +83,8 @@ def _decompose_via_av(source, max_frames, step):
                         else:
                             frame_list = [t]
                         written += 1
+                        if written >= limit:
+                            done_video = True
                     frame_idx += 1
                 elif isinstance(frame, av.AudioFrame):
                     audio_chunks.append(frame.to_ndarray())
@@ -112,7 +120,7 @@ def _decompose_via_cv2(path, max_frames, step):
 
     cap = cv2.VideoCapture(path)
     if not cap.isOpened():
-        raise RuntimeError(f"无法打开视频: {path}")
+        raise RuntimeError(f"Cannot open video: {path}")
 
     fps = cap.get(cv2.CAP_PROP_FPS) or 24.0
     total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -140,7 +148,7 @@ def _decompose_via_cv2(path, max_frames, step):
         ret, frame = cap.read()
         if not ret:
             break
-        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+        rgb = (cv2.cvtColor(frame, cv2.COLOR_BGR2RGB).astype(np.float32) * (1.0 / 255.0))
         if images is not None and written < images.shape[0]:
             images[written] = rgb
         elif frame_list is not None:
@@ -182,8 +190,8 @@ def _resolve_input(video_input):
                     return "path", p
 
     raise ValueError(
-        f"不支持的视频输入类型: {type(video_input).__name__}。"
-        "请传入视频文件路径(STRING)或 ComfyUI VideoInput 对象。"
+        f"Unsupported video input type: {type(video_input).__name__}. "
+        "Use video file path (STRING) or ComfyUI VideoInput."
     )
 
 
@@ -192,42 +200,42 @@ class VideoDecompose:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "视频": (any_type, {}),
+                "video": (any_type, {}),
             },
             "optional": {
-                "最大帧数": ("INT", {"default": 0, "min": 0, "max": 99999, "step": 1,
-                             "tooltip": "0 = 不限制，提取所有帧"}),
-                "跳帧间隔": ("INT", {"default": 1, "min": 1, "max": 100, "step": 1,
-                             "tooltip": "每隔 N 帧取一帧，1 = 逐帧"}),
+                "max_frames": ("INT", {"default": 0, "min": 0, "max": 99999, "step": 1,
+                             "tooltip": "0 = no limit"}),
+                "frame_skip": ("INT", {"default": 1, "min": 1, "max": 100, "step": 1,
+                             "tooltip": "Take every Nth frame, 1 = all"}),
             },
         }
 
     RETURN_TYPES = ("IMAGE", "AUDIO", "FLOAT", "FLOAT", "INT", "INT", "INT")
-    RETURN_NAMES = ("图像", "音频", "时长", "帧率", "总帧数", "宽度", "高度")
+    RETURN_NAMES = ("images", "audio", "duration", "fps", "frame_count", "width", "height")
     FUNCTION = "execute"
     OUTPUT_NODE = True
-    CATEGORY = "⚡ 逻辑/🎬 视频"
+    CATEGORY = "⚡ Logic/🎬 Video"
 
     @classmethod
     def IS_CHANGED(cls, **kwargs):
         return float("NaN")
 
-    def execute(self, 视频, 最大帧数=0, 跳帧间隔=1):
-        step = max(1, 跳帧间隔)
-        kind, source = _resolve_input(视频)
+    def execute(self, video, max_frames=0, frame_skip=1):
+        step = max(1, frame_skip)
+        kind, source = _resolve_input(video)
 
         if kind == "api":
             stream = source.get_stream_source()
             images, audio, duration, fps, count, w, h, has_audio = \
-                _decompose_via_av(stream, 最大帧数, step)
+                _decompose_via_av(stream, max_frames, step)
         else:
             try:
                 import av  # noqa: F401
                 images, audio, duration, fps, count, w, h, has_audio = \
-                    _decompose_via_av(source, 最大帧数, step)
+                    _decompose_via_av(source, max_frames, step)
             except ImportError:
                 images, audio, duration, fps, count, w, h, has_audio = \
-                    _decompose_via_cv2(source, 最大帧数, step)
+                    _decompose_via_cv2(source, max_frames, step)
 
         return {
             "ui": {
@@ -242,4 +250,4 @@ class VideoDecompose:
 
 
 NODE_CLASS_MAPPINGS = {"Logic_VideoDecompose": VideoDecompose}
-NODE_DISPLAY_NAME_MAPPINGS = {"Logic_VideoDecompose": "✂️ 分解视频"}
+NODE_DISPLAY_NAME_MAPPINGS = {"Logic_VideoDecompose": "✂️ Decompose Video"}
