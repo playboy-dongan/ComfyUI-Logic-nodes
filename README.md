@@ -10,7 +10,7 @@ ComfyUI logic utility nodes - workflow control, conditional logic, universal pre
 
 ```bash
 cd ComfyUI/custom_nodes
-git clone https://github.com/playboy-dongan/ComfyUI-Logic.git
+git clone https://github.com/playboy-dongan/comfyui-logic-nodes.git
 ```
 
 重启 ComfyUI 即可使用，无额外依赖。
