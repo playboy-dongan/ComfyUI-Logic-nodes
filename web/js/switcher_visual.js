@@ -1,4 +1,5 @@
 import { app } from "../../scripts/app.js";
+import { tr, trTypeName } from "./tr.js";
 
 const MIN_INPUTS = 2;
 const MAX_INPUTS = 10;
@@ -8,13 +9,13 @@ app.registerExtension({
     nodeCreated(node) {
         if (node.comfyClass !== "Logic_Switcher") return;
 
-        const selectWidget = node.widgets?.find(w => w.name === "选择");
+        const selectWidget = node.widgets?.find(w => w.name === "select");
         if (!selectWidget) return;
 
         const optionalShape = node.inputs[0]?.shape;
 
         function getOptInputs() {
-            return node.inputs.filter(inp => inp.name.startsWith("任意"));
+            return node.inputs.filter(inp => inp.name.startsWith("any"));
         }
 
         function getSourceType(optIndex) {
@@ -40,7 +41,7 @@ app.registerExtension({
             out.type = "*";
             const selIdx = selectWidget.value - 1;
             const srcType = getSourceType(selIdx);
-            out.label = (srcType && srcType !== "*") ? `输出 (${srcType})` : "输出";
+            out.label = (srcType && srcType !== "*") ? tr("Logic.Switcher.outputWithType").replace("{type}", trTypeName(srcType)) : tr("Logic.Switcher.output");
         }
 
         function adjustInputs() {
@@ -61,7 +62,7 @@ app.registerExtension({
 
             while (getOptInputs().length < target) {
                 const idx = getOptInputs().length + 1;
-                node.addInput(`任意${idx}`, "*");
+                node.addInput(`any${idx}`, "*");
                 if (optionalShape != null) {
                     node.inputs[node.inputs.length - 1].shape = optionalShape;
                 }
@@ -78,11 +79,12 @@ app.registerExtension({
 
         function updateLabels() {
             const idx = selectWidget.value;
-            node.title = `🎚️ 切换器 → 任意${idx}`;
+            node.title = tr("Logic.Switcher.title").replace("{idx}", idx);
             node.inputs.forEach((inp) => {
-                if (!inp.name.startsWith("任意")) return;
-                const num = parseInt(inp.name.replace("任意", ""));
-                inp.label = (num === idx) ? `▶ 任意${num}` : `任意${num}`;
+                if (!inp.name.startsWith("any")) return;
+                const num = parseInt(inp.name.replace("any", ""));
+                const fmt = (num === idx) ? tr("Logic.Switcher.anyLabelSelected") : tr("Logic.Switcher.anyLabel");
+                inp.label = fmt.replace("{idx}", num);
             });
             resetOutputType();
             node.setSize(node.computeSize());

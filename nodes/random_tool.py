@@ -3,7 +3,7 @@ from .blocker import AlwaysEqualProxy
 
 any_type = AlwaysEqualProxy("*")
 
-MODES = ["随机整数", "随机浮点数", "随机种子", "随机布尔"]
+MODES = ["random_int", "random_float", "random_seed", "random_bool"]
 
 
 class RandomTool:
@@ -11,31 +11,31 @@ class RandomTool:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "模式": (MODES, {"default": "随机种子"}),
-                "最小值": ("FLOAT", {"default": 0, "min": -1e18, "max": 1e18, "step": 1}),
-                "最大值": ("FLOAT", {"default": 100, "min": -1e18, "max": 1e18, "step": 1}),
+                "mode": (MODES, {"default": "random_seed"}),
+                "min_val": ("FLOAT", {"default": 0, "min": -1e18, "max": 1e18, "step": 1}),
+                "max_val": ("FLOAT", {"default": 100, "min": -1e18, "max": 1e18, "step": 1}),
             },
         }
 
     RETURN_TYPES = (any_type,)
-    RETURN_NAMES = ("随机值",)
+    RETURN_NAMES = ("random",)
     FUNCTION = "execute"
     OUTPUT_NODE = True
-    CATEGORY = "⚡ 逻辑"
+    CATEGORY = "⚡ Logic"
 
     @classmethod
     def IS_CHANGED(cls, **kwargs):
         return float("NaN")
 
-    def execute(self, 模式, 最小值=0, 最大值=100):
-        if 模式 == "随机整数":
-            lo, hi = int(最小值), int(最大值)
+    def execute(self, mode, min_val=0, max_val=100):
+        if mode == "random_int":
+            lo, hi = int(min_val), int(max_val)
             value = random.randint(min(lo, hi), max(lo, hi))
-        elif 模式 == "随机浮点数":
-            value = round(random.uniform(最小值, 最大值), 6)
-        elif 模式 == "随机种子":
+        elif mode == "random_float":
+            value = round(random.uniform(min_val, max_val), 6)
+        elif mode == "random_seed":
             value = random.randint(0, 2**64 - 1)
-        elif 模式 == "随机布尔":
+        elif mode == "random_bool":
             value = random.choice([True, False])
         else:
             value = 0
@@ -44,4 +44,4 @@ class RandomTool:
 
 
 NODE_CLASS_MAPPINGS = {"Logic_Random": RandomTool}
-NODE_DISPLAY_NAME_MAPPINGS = {"Logic_Random": "🎲 随机工具"}
+NODE_DISPLAY_NAME_MAPPINGS = {"Logic_Random": "🎲 Random Tool"}

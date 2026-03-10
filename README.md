@@ -2,6 +2,8 @@
 
 ComfyUI 逻辑工具节点包，提供工作流控制、条件判断、数据预览与批处理功能。
 
+ComfyUI logic utility nodes - workflow control, conditional logic, universal preview, batch processing, type conversion, math expressions, and video processing. **i18n**: UI follows ComfyUI language (zh/en).
+
 ## 安装
 
 将本仓库克隆到 ComfyUI 的 `custom_nodes` 目录：
@@ -17,7 +19,8 @@ git clone https://github.com/playboy-dongan/ComfyUI-Logic.git
 
 ### 1. 🚧 阻断器（Blocker）
 
-根据布尔开关决定是否放行数据。
+根据布尔开关决定是否放行数据。  
+*Pass or block data based on a boolean switch.*
 
 | 项目 | 内容 |
 |------|------|
@@ -31,7 +34,8 @@ git clone https://github.com/playboy-dongan/ComfyUI-Logic.git
 
 ### 2. 👁️ 预览任意类型（Preview Type）
 
-显示输入数据的类型名称和详细信息。
+显示输入数据的类型名称和详细信息。  
+*Display type name and details of input data.*
 
 | 项目 | 内容 |
 |------|------|
@@ -45,7 +49,8 @@ git clone https://github.com/playboy-dongan/ComfyUI-Logic.git
 
 ### 3. ⚖️ 判断器（Judge）
 
-对两个任意类型的值进行条件判断，输出布尔结果。
+对两个任意类型的值进行条件判断，输出布尔结果。  
+*Conditional comparison of two values, outputs boolean.*
 
 | 项目 | 内容 |
 |------|------|
@@ -60,7 +65,8 @@ git clone https://github.com/playboy-dongan/ComfyUI-Logic.git
 
 ### 4. 🔀 条件切换（Switch）
 
-根据布尔值从两个输入中选择一个输出。
+根据布尔值从两个输入中选择一个输出。  
+*Select one of two inputs based on boolean (if/else).*
 
 | 项目 | 内容 |
 |------|------|
@@ -74,7 +80,8 @@ git clone https://github.com/playboy-dongan/ComfyUI-Logic.git
 
 ### 5. 🎚️ 切换器（Switcher）
 
-从多个任意类型输入中选择一个输出，支持动态输入端口。
+从多个任意类型输入中选择一个输出，支持动态输入端口。  
+*Select one output from multiple inputs by index, dynamic ports.*
 
 | 项目 | 内容 |
 |------|------|
@@ -88,7 +95,8 @@ git clone https://github.com/playboy-dongan/ComfyUI-Logic.git
 
 ### 6. 🖥️ 通用预览（Universal Preview）
 
-预览几乎所有 ComfyUI 支持的数据格式。
+预览几乎所有 ComfyUI 支持的数据格式。  
+*Preview images, masks, audio, text, latent, etc.*
 
 | 项目 | 内容 |
 |------|------|
@@ -102,7 +110,8 @@ git clone https://github.com/playboy-dongan/ComfyUI-Logic.git
 
 ### 7. 📦 组合任意批次（Batch Combiner）
 
-将多个输入按端口顺序合并为同一批次或拼接为一体。
+将多个输入按端口顺序合并为同一批次或拼接为一体。  
+*Merge multiple inputs into one batch or concatenate.*
 
 | 项目 | 内容 |
 |------|------|
@@ -117,7 +126,8 @@ git clone https://github.com/playboy-dongan/ComfyUI-Logic.git
 
 ### 8. ⚙️ 批处理器（Batch Processor）
 
-自动重复执行工作流指定次数，每次输出递增的索引。
+自动重复执行工作流指定次数，每次输出递增的索引。  
+*Repeat workflow N times, output index and remaining count.*
 
 | 项目 | 内容 |
 |------|------|
@@ -129,9 +139,75 @@ git clone https://github.com/playboy-dongan/ComfyUI-Logic.git
 
 ---
 
-### 9. 🎲 随机工具（Random Tool）
+### 9. 🔄 类型转换（Converter）
 
-生成各种随机数据。
+将任意类型输入同时转换为字符串、整数、浮点数、布尔值四种基础类型，按需连接所需输出端口。  
+*Convert any type to STRING/INT/FLOAT/BOOLEAN simultaneously.*
+
+| 项目 | 内容 |
+|------|------|
+| 输入 | 任意类型 |
+| 输出 | STRING（字符串）、INT（整数）、FLOAT（浮点数）、BOOLEAN（布尔值） |
+| 转换规则 | 字符串：万物 `str()`；整数/浮点数：数值直接转、字符串尝试解析、列表/字典取长度；布尔值：`"false"/"0"/"no"/"none"/""/null` 为 False |
+| 特性 | 执行后显示源类型和四种转换结果 |
+
+![类型转换](assets/converter.png)
+
+---
+
+### 10. 🧮 数学表达式（Math Expression）
+
+输入数学表达式，自动计算结果。支持动态可扩展输入端口（A~J）。  
+*Evaluate math expressions with A~J variables, safe AST parsing.*
+
+| 项目 | 内容 |
+|------|------|
+| 输入 | A~J 动态端口（任意类型，自动转数值）+ 表达式文本框 |
+| 输出 | FLOAT（浮点数）、INT（整数）、BOOLEAN（布尔值，非零为 True） |
+| 运算符 | `+` `-` `*` `/` `//` `%` `**` |
+| 比较 | `==` `!=` `>` `<` `>=` `<=`（真=1.0，假=0.0） |
+| 函数 | `sin` `cos` `tan` `asin` `acos` `atan` `atan2` `abs` `round` `ceil` `floor` `sqrt` `pow` `log` `log2` `log10` `min` `max` `clamp` |
+| 常量 | `pi` `e` `inf` |
+| 特性 | 动态端口（连满自动新增，断开自动收回），安全 AST 解析，执行后标题显示计算结果 |
+
+![数学表达式](assets/math_expression.png)
+
+---
+
+### 11. ✂️ 分解视频（Video Decompose）
+
+将视频分解为图像帧、音频及元数据。支持 ComfyUI VideoInput 和文件路径输入。  
+*Decompose video into frames, audio, and metadata. Multi-threaded decoding.*
+
+| 项目 | 内容 |
+|------|------|
+| 输入 | 视频（VideoInput 或文件路径）+ 最大帧数（可选）+ 跳帧间隔（可选） |
+| 输出 | IMAGE（图像帧）、AUDIO（音频）、FLOAT（时长、帧率）、INT（总帧数、宽度、高度） |
+| 特性 | 多线程解码、单次遍历提取音视频、预分配张量，可设置最大帧数和跳帧间隔以提速 |
+
+![分解视频](assets/video_decompose.png)
+
+---
+
+### 12. 🎞️ 合成视频（Video Compose）
+
+将图像帧与音频合成为 ComfyUI 原生 VIDEO 对象。  
+*Compose image frames and audio into ComfyUI VIDEO object.*
+
+| 项目 | 内容 |
+|------|------|
+| 输入 | 图像（IMAGE）+ 帧率（FLOAT）+ 音频（AUDIO，可选） |
+| 输出 | VIDEO（可连接保存/预览节点） |
+| 特性 | 与分解视频节点配套使用，支持 H.264 编码 |
+
+![合成视频](assets/video_compose.png)
+
+---
+
+### 13. 🎲 随机工具（Random Tool）
+
+生成各种随机数据。  
+*Generate random integer, float, seed, or boolean.*
 
 | 项目 | 内容 |
 |------|------|
@@ -151,7 +227,14 @@ ComfyUI-Logic/
 ├── __init__.py
 ├── README.md
 ├── pyproject.toml
-├── assets/                  # 截图示例
+├── assets/                  # 截图示例 Screenshots
+├── locales/                 # i18n 多语言
+│   ├── zh/                  # 中文
+│   │   ├── main.json
+│   │   └── nodeDefs.json
+│   └── en/                  # English
+│       ├── main.json
+│       └── nodeDefs.json
 ├── nodes/
 │   ├── __init__.py
 │   ├── blocker.py           # 阻断器
@@ -162,7 +245,11 @@ ComfyUI-Logic/
 │   ├── preview.py           # 通用预览
 │   ├── batch_combiner.py    # 组合任意批次
 │   ├── looper.py            # 批处理器
-│   └── random_tool.py       # 随机工具
+│   ├── random_tool.py       # 随机工具
+│   ├── converter.py         # 类型转换
+│   ├── math_expression.py   # 数学表达式
+│   ├── video_decompose.py   # 分解视频
+│   └── video_compose.py     # 合成视频
 └── web/
     └── js/
         ├── blocker_visual.js
@@ -173,7 +260,11 @@ ComfyUI-Logic/
         ├── preview_visual.js
         ├── batch_combiner_visual.js
         ├── looper_visual.js
-        └── random_visual.js
+        ├── random_visual.js
+        ├── converter_visual.js
+        ├── math_visual.js
+        ├── video_decompose_visual.js
+        └── video_compose_visual.js
 ```
 
 ## 许可证

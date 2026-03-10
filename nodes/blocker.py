@@ -15,22 +15,22 @@ class Blocker:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "任意": (any_type, {}),
-            "启用": ("BOOLEAN", {"default": True, "label_on": "通过", "label_off": "阻断"}),
+            "any": (any_type, {}),
+            "enable": ("BOOLEAN", {"default": True, "label_on": "Pass", "label_off": "Block", "on": "Pass", "off": "Block"}),
         }}
 
     RETURN_TYPES = (any_type,)
-    RETURN_NAMES = ("任意",)
+    RETURN_NAMES = ("any",)
     FUNCTION = "execute"
-    CATEGORY = "⚡ 逻辑"
+    CATEGORY = "⚡ Logic"
 
     @classmethod
     def IS_CHANGED(cls, **kwargs):
         return float("NaN")
 
-    def execute(self, 任意, 启用):
-        return (任意,) if 启用 else (ExecutionBlocker(None),)
+    def execute(self, any, enable):
+        return (any,) if enable else (ExecutionBlocker(None),)
 
 
 NODE_CLASS_MAPPINGS = {"Logic_Blocker": Blocker}
-NODE_DISPLAY_NAME_MAPPINGS = {"Logic_Blocker": "🚧 阻断器"}
+NODE_DISPLAY_NAME_MAPPINGS = {"Logic_Blocker": "🚧 Blocker"}

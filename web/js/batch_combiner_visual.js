@@ -1,4 +1,5 @@
 import { app } from "../../scripts/app.js";
+import { tr, trTypeName, trDetail } from "./tr.js";
 
 const MIN_INPUTS = 2;
 const MAX_INPUTS = 10;
@@ -26,7 +27,7 @@ app.registerExtension({
 
             while (node.inputs.length < target) {
                 const idx = node.inputs.length + 1;
-                node.addInput(`任意${idx}`, "*");
+                node.addInput(`any${idx}`, "*");
                 if (optionalShape != null) {
                     node.inputs[node.inputs.length - 1].shape = optionalShape;
                 }
@@ -46,9 +47,9 @@ app.registerExtension({
         function updateTitle() {
             const n = countConnected();
             if (n > 0) {
-                node.title = `📦 组合任意批次 (${n}个输入)`;
+                node.title = tr("Logic.BatchCombiner.titleWithInputs").replace("{n}", n);
             } else {
-                node.title = "📦 组合任意批次";
+                node.title = tr("Logic.BatchCombiner.title");
             }
             node.setSize(node.computeSize());
             node.setDirtyCanvas(true, true);
@@ -76,7 +77,8 @@ app.registerExtension({
             const detail = data?.detail?.[0];
             const typeName = data?.type_name?.[0];
             if (typeName && detail) {
-                node.title = `📦 组合任意批次 → ${typeName} ${detail}`;
+                node.title = tr("Logic.BatchCombiner.titleWithResult")
+                    .replace("{type}", trTypeName(typeName)).replace("{detail}", trDetail(detail));
             }
             node.setDirtyCanvas(true, true);
         };

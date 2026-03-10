@@ -1,0 +1,148 @@
+{
+  "Logic_Blocker": {
+    "display_name": "🚧 阻断器",
+    "description": "根据布尔开关决定是否放行数据。条件为假时静默阻断下游执行。",
+    "inputs": {
+      "any": { "name": "任意", "tooltip": "任意类型输入" },
+      "enable": { "name": "启用", "tooltip": "通过/阻断", "label_on": "通过", "label_off": "阻断", "on": "通过", "off": "阻断" }
+    },
+    "outputs": { "0": { "name": "任意", "tooltip": "透传或阻断" } }
+  },
+  "Logic_PreviewType": {
+    "display_name": "👁️ 预览任意类型",
+    "description": "显示输入数据的类型名称和详细信息。",
+    "inputs": { "any": { "name": "任意", "tooltip": "任意类型输入" } }
+  },
+  "Logic_Judge": {
+    "display_name": "⚖️ 判断器",
+    "description": "对两个任意类型的值进行条件判断，输出布尔结果。",
+    "inputs": {
+      "any_a": { "name": "任意A", "tooltip": "第一个比较值" },
+      "condition": { "name": "条件", "tooltip": "比较条件", "options": {
+        "A == B": "A == B", "A != B": "A != B", "A > B": "A > B", "A < B": "A < B", "A >= B": "A >= B", "A <= B": "A <= B",
+        "A contains B": "A 包含 B", "A is empty": "A 为空", "A is not empty": "A 不为空", "A is true": "A 为真", "A is false": "A 为假",
+        "length == B": "长度 == B", "length > B": "长度 > B", "length < B": "长度 < B"
+      }},
+      "any_b": { "name": "任意B", "tooltip": "第二个比较值（可选）" }
+    },
+    "outputs": { "0": { "name": "结果", "tooltip": "布尔判断结果" } }
+  },
+  "Logic_Switch": {
+    "display_name": "🔀 条件切换",
+    "description": "根据布尔值从两个输入中选择一个输出。",
+    "inputs": {
+      "true_val": { "name": "真", "tooltip": "条件为真时输出" },
+      "false_val": { "name": "假", "tooltip": "条件为假时输出" },
+      "condition": { "name": "条件", "tooltip": "布尔条件", "label_on": "真", "label_off": "假", "on": "真", "off": "假" }
+    },
+    "outputs": { "0": { "name": "输出", "tooltip": "选中的输入" } }
+  },
+  "Logic_Switcher": {
+    "display_name": "🎚️ 切换器",
+    "description": "从多个输入中按索引选择一个输出。",
+    "inputs": {
+      "select": { "name": "选择", "tooltip": "要输出的端口索引" },
+      "any1": { "name": "任意1", "tooltip": "输入1" },
+      "any2": { "name": "任意2", "tooltip": "输入2" }
+    },
+    "outputs": { "0": { "name": "输出", "tooltip": "被选中的输入" } }
+  },
+  "Logic_UniversalPreview": {
+    "display_name": "🖥️ 通用预览",
+    "description": "预览几乎所有 ComfyUI 支持的数据格式。",
+    "inputs": { "any": { "name": "任意", "tooltip": "任意类型输入" } }
+  },
+  "Logic_BatchCombiner": {
+    "display_name": "📦 组合任意批次",
+    "description": "将多个输入按端口顺序合并为同一批次。",
+    "inputs": {
+      "any1": { "name": "任意1", "tooltip": "输入1" },
+      "any2": { "name": "任意2", "tooltip": "输入2" }
+    },
+    "outputs": { "0": { "name": "批次", "tooltip": "合并后的数据" } }
+  },
+  "Logic_Looper": {
+    "display_name": "⚙️ 批处理器",
+    "description": "自动重复执行工作流指定次数。",
+    "inputs": {
+      "total": { "name": "总次数", "tooltip": "重复执行次数" },
+      "any": { "name": "任意", "tooltip": "可选透传数据" }
+    },
+    "outputs": {
+      "0": { "name": "任意", "tooltip": "透传输入" },
+      "1": { "name": "索引", "tooltip": "当前第几次" },
+      "2": { "name": "总次数", "tooltip": "总重复次数" },
+      "3": { "name": "剩余", "tooltip": "剩余次数" }
+    }
+  },
+  "Logic_Random": {
+    "display_name": "🎲 随机工具",
+    "description": "生成随机整数、浮点数、种子或布尔值。",
+    "inputs": {
+      "mode": { "name": "模式", "tooltip": "随机类型", "options": {
+        "random_int": "随机整数",
+        "random_float": "随机浮点数",
+        "random_seed": "随机种子",
+        "random_bool": "随机布尔"
+      }},
+      "min_val": { "name": "最小值", "tooltip": "整数/浮点数模式的下界" },
+      "max_val": { "name": "最大值", "tooltip": "整数/浮点数模式的上界" }
+    },
+    "outputs": { "0": { "name": "随机值", "tooltip": "生成的随机值" } }
+  },
+  "Logic_Converter": {
+    "display_name": "🔄 类型转换",
+    "description": "将任意类型输入同时转换为字符串、整数、浮点数、布尔值。",
+    "inputs": { "any": { "name": "任意", "tooltip": "任意类型输入" } },
+    "outputs": {
+      "0": { "name": "字符串", "tooltip": "STRING 输出" },
+      "1": { "name": "整数", "tooltip": "INT 输出" },
+      "2": { "name": "浮点数", "tooltip": "FLOAT 输出" },
+      "3": { "name": "布尔值", "tooltip": "BOOLEAN 输出" }
+    }
+  },
+  "Logic_Math": {
+    "display_name": "🧮 数学表达式",
+    "description": "输入数学表达式，支持 A~J 变量、运算符、数学函数。",
+    "inputs": {
+      "expression": { "name": "表达式", "tooltip": "如 A+B、sin(A)*100" },
+      "A": { "name": "A", "tooltip": "变量 A" },
+      "B": { "name": "B", "tooltip": "变量 B" },
+      "C": { "name": "C", "tooltip": "变量 C" },
+      "D": { "name": "D", "tooltip": "变量 D" }
+    },
+    "outputs": {
+      "0": { "name": "浮点数", "tooltip": "FLOAT 结果" },
+      "1": { "name": "整数", "tooltip": "INT 结果" },
+      "2": { "name": "布尔值", "tooltip": "BOOLEAN 结果" }
+    }
+  },
+  "Logic_VideoDecompose": {
+    "display_name": "✂️ 分解视频",
+    "description": "将视频分解为图像帧、音频及元数据。",
+    "inputs": {
+      "video": { "name": "视频", "tooltip": "视频文件或 VideoInput" },
+      "max_frames": { "name": "最大帧数", "tooltip": "0=不限制" },
+      "frame_skip": { "name": "跳帧间隔", "tooltip": "每隔 N 帧取一帧" }
+    },
+    "outputs": {
+      "0": { "name": "图像", "tooltip": "图像帧批次" },
+      "1": { "name": "音频", "tooltip": "提取的音频" },
+      "2": { "name": "时长", "tooltip": "视频时长(秒)" },
+      "3": { "name": "帧率", "tooltip": "FPS" },
+      "4": { "name": "总帧数", "tooltip": "提取的帧数" },
+      "5": { "name": "宽度", "tooltip": "视频宽度" },
+      "6": { "name": "高度", "tooltip": "视频高度" }
+    }
+  },
+  "Logic_VideoCompose": {
+    "display_name": "🎞️ 合成视频",
+    "description": "将图像帧与音频合成为 ComfyUI 原生 VIDEO 对象。",
+    "inputs": {
+      "images": { "name": "图像", "tooltip": "图像帧批次" },
+      "fps": { "name": "帧率", "tooltip": "FPS" },
+      "audio": { "name": "音频", "tooltip": "可选音频" }
+    },
+    "outputs": { "0": { "name": "视频", "tooltip": "VIDEO 对象" } }
+  }
+}

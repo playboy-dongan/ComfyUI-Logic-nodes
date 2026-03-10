@@ -15,31 +15,27 @@ except ImportError:
 class BatchCombiner:
     @classmethod
     def INPUT_TYPES(cls):
-        optional = {f"任意{i}": (any_type, {}) for i in range(1, MAX_INPUTS + 1)}
+        optional = {f"any{i}": (any_type, {}) for i in range(1, MAX_INPUTS + 1)}
         return {
             "required": {},
             "optional": optional,
         }
 
     RETURN_TYPES = (any_type,)
-    RETURN_NAMES = ("批次",)
+    RETURN_NAMES = ("batch",)
     FUNCTION = "execute"
     OUTPUT_NODE = True
-    CATEGORY = "⚡ 逻辑"
+    CATEGORY = "⚡ Logic"
 
     @classmethod
     def IS_CHANGED(cls, **kwargs):
         return float("NaN")
 
     def execute(self, **kwargs):
-        items = []
-        for i in range(1, MAX_INPUTS + 1):
-            key = f"任意{i}"
-            if key in kwargs:
-                items.append(kwargs[key])
+        items = [kwargs[f"any{i}"] for i in range(1, MAX_INPUTS + 1) if f"any{i}" in kwargs]
 
         if not items:
-            return {"ui": {"detail": ["无输入"], "type_name": [""]},
+            return {"ui": {"detail": ["no input"], "type_name": [""]},
                     "result": (ExecutionBlocker(None),)}
 
         if len(items) == 1:
@@ -175,4 +171,4 @@ class BatchCombiner:
 
 
 NODE_CLASS_MAPPINGS = {"Logic_BatchCombiner": BatchCombiner}
-NODE_DISPLAY_NAME_MAPPINGS = {"Logic_BatchCombiner": "📦 组合任意批次"}
+NODE_DISPLAY_NAME_MAPPINGS = {"Logic_BatchCombiner": "📦 Batch Combiner"}
