@@ -1,4 +1,4 @@
-# ComfyUI-Logic
+# ComfyUI-Logic-nodes
 
 ComfyUI 逻辑工具节点包，提供工作流控制、条件判断、数据预览与批处理功能。
 
